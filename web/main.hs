@@ -22,7 +22,9 @@ Usuario json
 
 mkYesod "Pagina" [parseRoutes|
 / HomeR GET
-/usuario/cadastro UsuarioR GET
+/usuario/cadastro UsuarioR GET POST
+/usuario/checar/#UsuarioId ChecarUsuarioR GET
+/erro ErroR GET
 |]
 
 instance YesodPersist Pagina where
@@ -47,7 +49,32 @@ formUsuario = renderDivs $ Usuario <$>
 getUsuarioR :: Handler Html
 getUsuarioR = do
             (widget, enctype) <- generateFormPost formUsuario
-            defaultLayout $ [whamlet| ^{widget}|]
+            defaultLayout $ [whamlet| 
+                ^{widget}
+                <input type="submit" value="Salvar" class="submit">
+|]
+
+postUsuarioR :: Handler Html
+postUsuarioR = do
+           ((result, _), _) <- runFormPost formUsuario
+           case result of 
+               FormSuccess usuarioRetornoTela -> (runDB $ insert usuarioRetornoTela) >>= \uiid -> redirect (ChecarUsuarioR uiid)
+               _ -> redirect ErroR
+
+getChecarUsuarioR :: UsuarioId -> Handler Html
+getChecarUsuarioR aid = do
+    usuario <- runDB $ get404 aid
+    defaultLayout [whamlet|
+        <p><b> #{usuarioNome usuario}  
+        <p><b> #{usuarioSenha usuario}  
+        <p><b> #{usuarioTipo usuario}  
+        <p><b> #{usuarioEmail usuario}
+    |]
+
+getErroR :: Handler Html
+getErroR = defaultLayout [whamlet|
+    ocorreu uma falha no sucesso 
+|]
 
 getHomeR :: Handler Html
 getHomeR = defaultLayout [whamlet|Hello World!|]
