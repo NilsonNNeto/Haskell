@@ -52,14 +52,14 @@ formUsuario = renderDivs $ Usuario <$>
            areq passwordField "Senha: " Nothing <*>
            areq (selectFieldList [("Professor" :: Text, "Professor"),("Aluno", "Aluno")]) "Tipo: " Nothing <*>
            areq emailField "Email: " Nothing
-
+          
 getUsuarioR :: Handler Html
 getUsuarioR = do
             (widget, enctype) <- generateFormPost formUsuario
             defaultLayout $ do
-                -- toWidget $(luciusFile "templates/lucius/menu.lucius")
                 addStylesheet $ StaticR menu_css
                 $(whamletFile "templates/hamlet/menu.hamlet")
+                $(whamletFile "templates/hamlet/form/cadastrarUsuario.hamlet")
 
 postUsuarioR :: Handler Html
 postUsuarioR = do
