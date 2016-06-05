@@ -1,0 +1,10 @@
+<section>
+    <div id="main">
+        <div class="main-content">
+            <h1 class="titulo">Cadastro de Materia
+            <fieldset>
+                <legend>Preencha o formulário
+                <form method=post id="form-materia" enctype=#{enctype} action=@{MateriaR}>
+                    ^{widget}
+                    <input type="submit" value="Salvar" class="submit">
+                    <span class="clearfix">

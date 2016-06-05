@@ -95,11 +95,10 @@ getTurmaR = do
 getMateriaR :: Handler Html
 getMateriaR = do
             (widget, enctype) <- generateFormPost formMateria
-            defaultLayout $ [whamlet|
-                <form method=post id="form-materia" enctype=#{enctype} action=@{MateriaR}>
-                    ^{widget}
-                    <input type="submit" value="Salvar" class="submit">
-|]
+            defaultLayout $ do
+                addStylesheet $ StaticR menu_css
+                $(whamletFile "templates/hamlet/menu.hamlet")
+                $(whamletFile "templates/hamlet/form/cadastrarMateria.hamlet")
 
 postUsuarioR :: Handler Html
 postUsuarioR = do
@@ -141,11 +140,10 @@ getChecarTurmaR aid = do
 getChecarMateriaR :: MateriaId -> Handler Html
 getChecarMateriaR aid = do
     materia <- runDB $ get404 aid
-    defaultLayout $ [whamlet|
-        <p>Nome: #{materiaNome materia}
-        <p>Turma: #{materiaTurma materia}
-        <p>Aluno: #{materiaAluno materia}
-|]
+    defaultLayout $ do
+        addStylesheet $ StaticR menu_css
+        $(whamletFile "templates/hamlet/menu.hamlet")
+        $(whamletFile "templates/hamlet/form/checarMateria.hamlet")
 
 getErroR :: Handler Html
 getErroR = defaultLayout [whamlet|
