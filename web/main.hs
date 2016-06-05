@@ -20,18 +20,22 @@ Usuario json
    tipo Text
    email Text
    deriving Show
+
+Turma json
+    nome Text
+	deriving Show
 |]
 
 staticFiles "../static" 
 
 mkYesod "Pagina" [parseRoutes|
-
 / HomeR GET
 /usuario/cadastro UsuarioR GET POST
 /usuario/checar/#UsuarioId ChecarUsuarioR GET
+/turma/cadastro TurmaR GET
+
 /erro ErroR GET
 /static StaticR Static getStatic
-
 |]
 
 instance YesodPersist Pagina where
@@ -52,7 +56,11 @@ formUsuario = renderDivs $ Usuario <$>
            areq passwordField "Senha: " Nothing <*>
            areq (selectFieldList [("Professor" :: Text, "Professor"),("Aluno", "Aluno")]) "Tipo: " Nothing <*>
            areq emailField "Email: " Nothing
-          
+
+formTurma :: Form Turma
+formTurma = renderDivs $ Turma <$>
+           areq textField "Nome: " Nothing
+
 getUsuarioR :: Handler Html
 getUsuarioR = do
             (widget, enctype) <- generateFormPost formUsuario
@@ -60,6 +68,14 @@ getUsuarioR = do
                 addStylesheet $ StaticR menu_css
                 $(whamletFile "templates/hamlet/menu.hamlet")
                 $(whamletFile "templates/hamlet/form/cadastrarUsuario.hamlet")
+
+getTurmaR :: Handler Html
+getTurmaR = do
+            (widget, enctype) <- generateFormPost formTurma
+            defaultLayout $ [whamlet|
+                ^{widget}
+                <input type="submit" value="Salvar" class="submit">
+|]
 
 postUsuarioR :: Handler Html
 postUsuarioR = do
@@ -93,5 +109,5 @@ connStr = "dbname=d9pva9v7sc2rm1 host=ec2-54-163-240-97.compute-1.amazonaws.com 
 main::IO()
 main = runStdoutLoggingT $ withPostgresqlPool connStr 10 $ \pool -> liftIO $ do 
        runSqlPersistMPool (runMigration migrateAll) pool
-       t@(Static settings) <- static "static"
+       t@(Static settings) <- static "../static"
        warp 8080 (Pagina t pool)
