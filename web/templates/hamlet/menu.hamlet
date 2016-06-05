@@ -1,0 +1,23 @@
+<header>
+    <nav class="menu-container">
+        <div class="logo-container">
+            <a href="">Logo
+        <ul id="menu">
+            <li>
+                <a href="">Home
+            <li>
+                <a href="">Home
+            <li>
+                <a href="">Home
+        <div class="clearfix">
+        <div class="linha-menu">
+<section>
+    <div id="main">
+        <div class="main-content">
+            <h1 class="titulo">Cadastro de Usuário
+            <fieldset>
+                <legend>Preencha o formulário
+                <form method=post id="form-usuario" enctype=#{enctype} action=@{UsuarioR}>
+                    ^{widget}
+                    <input type="submit" value="Salvar" class="submit">
+                    <span class="clearfix">
