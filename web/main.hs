@@ -40,7 +40,8 @@ mkYesod "Pagina" [parseRoutes|
 /usuario/checar/#UsuarioId ChecarUsuarioR GET
 /turma/cadastro TurmaR GET POST
 /turma/checar/#TurmaId ChecarTurmaR GET
-/materia/cadastro MateriaR GET
+/materia/cadastro MateriaR GET POST
+/materia/checar/#MateriaId ChecarMateriaR GET
 
 /erro ErroR GET
 /static StaticR Static getStatic
@@ -96,8 +97,9 @@ getMateriaR :: Handler Html
 getMateriaR = do
             (widget, enctype) <- generateFormPost formMateria
             defaultLayout $ [whamlet|
-                ^{widget}
-                <input type="submit" value="Salvar" class="submit">
+                <form method=post id="form-materia" enctype=#{enctype} action=@{MateriaR}>
+                    ^{widget}
+                    <input type="submit" value="Salvar" class="submit">
 |]
 
 postUsuarioR :: Handler Html
@@ -114,6 +116,13 @@ postTurmaR = do
                FormSuccess turmaRetornoTela -> (runDB $ insert turmaRetornoTela) >>= \tiid -> redirect (ChecarTurmaR tiid)
                _ -> redirect ErroR
 
+postMateriaR :: Handler Html
+postMateriaR = do
+           ((result, _), _) <- runFormPost formMateria
+           case result of 
+               FormSuccess materiaRetornoTela -> (runDB $ insert materiaRetornoTela) >>= \miid -> redirect (ChecarMateriaR miid)
+               _ -> redirect ErroR
+
 getChecarUsuarioR :: UsuarioId -> Handler Html
 getChecarUsuarioR aid = do
     usuario <- runDB $ get404 aid
@@ -127,6 +136,15 @@ getChecarTurmaR aid = do
     turma <- runDB $ get404 aid
     defaultLayout $ [whamlet|
         <p>Nome: #{turmaNome turma}
+|]
+
+getChecarMateriaR :: MateriaId -> Handler Html
+getChecarMateriaR aid = do
+    materia <- runDB $ get404 aid
+    defaultLayout $ [whamlet|
+        <p>Nome: #{materiaNome materia}
+        <p>Turma: #{materiaTurma materia}
+        <p>Aluno: #{materiaAluno materia}
 |]
 
 getErroR :: Handler Html
