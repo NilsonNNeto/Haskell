@@ -24,6 +24,12 @@ Usuario json
 Turma json
     nome Text
 	deriving Show
+	
+Materia json
+	nome Text
+	turma Text
+	aluno Text
+	deriving Show
 |]
 
 staticFiles "../static" 
@@ -34,6 +40,7 @@ mkYesod "Pagina" [parseRoutes|
 /usuario/checar/#UsuarioId ChecarUsuarioR GET
 /turma/cadastro TurmaR GET POST
 /turma/checar/#TurmaId ChecarTurmaR GET
+/materia/cadastro MateriaR GET
 
 /erro ErroR GET
 /static StaticR Static getStatic
@@ -62,6 +69,12 @@ formTurma :: Form Turma
 formTurma = renderDivs $ Turma <$>
            areq textField "Nome: " Nothing
 
+formMateria :: Form Materia
+formMateria = renderDivs $ Materia <$>
+           areq textField "Nome: " Nothing <*>
+           areq textField "Turma: " Nothing <*>
+           areq textField "Aluno: " Nothing
+
 getUsuarioR :: Handler Html
 getUsuarioR = do
             (widget, enctype) <- generateFormPost formUsuario
@@ -77,6 +90,14 @@ getTurmaR = do
                 <form method=post id="form-turma" enctype=#{enctype} action=@{TurmaR}>
                     ^{widget}
                     <input type="submit" value="Salvar" class="submit">
+|]
+
+getMateriaR :: Handler Html
+getMateriaR = do
+            (widget, enctype) <- generateFormPost formMateria
+            defaultLayout $ [whamlet|
+                ^{widget}
+                <input type="submit" value="Salvar" class="submit">
 |]
 
 postUsuarioR :: Handler Html
