@@ -32,7 +32,8 @@ mkYesod "Pagina" [parseRoutes|
 / HomeR GET
 /usuario/cadastro UsuarioR GET POST
 /usuario/checar/#UsuarioId ChecarUsuarioR GET
-/turma/cadastro TurmaR GET
+/turma/cadastro TurmaR GET POST
+/turma/checar/#TurmaId ChecarTurmaR GET
 
 /erro ErroR GET
 /static StaticR Static getStatic
@@ -73,8 +74,9 @@ getTurmaR :: Handler Html
 getTurmaR = do
             (widget, enctype) <- generateFormPost formTurma
             defaultLayout $ [whamlet|
-                ^{widget}
-                <input type="submit" value="Salvar" class="submit">
+                <form method=post id="form-turma" enctype=#{enctype} action=@{TurmaR}>
+                    ^{widget}
+                    <input type="submit" value="Salvar" class="submit">
 |]
 
 postUsuarioR :: Handler Html
@@ -82,6 +84,13 @@ postUsuarioR = do
            ((result, _), _) <- runFormPost formUsuario
            case result of 
                FormSuccess usuarioRetornoTela -> (runDB $ insert usuarioRetornoTela) >>= \uiid -> redirect (ChecarUsuarioR uiid)
+               _ -> redirect ErroR
+
+postTurmaR :: Handler Html
+postTurmaR = do
+           ((result, _), _) <- runFormPost formTurma
+           case result of 
+               FormSuccess turmaRetornoTela -> (runDB $ insert turmaRetornoTela) >>= \tiid -> redirect (ChecarTurmaR tiid)
                _ -> redirect ErroR
 
 getChecarUsuarioR :: UsuarioId -> Handler Html
@@ -92,6 +101,12 @@ getChecarUsuarioR aid = do
         $(whamletFile "templates/hamlet/menu.hamlet")
         $(whamletFile "templates/hamlet/form/checarUsuario.hamlet")
 
+getChecarTurmaR :: TurmaId -> Handler Html
+getChecarTurmaR aid = do
+    turma <- runDB $ get404 aid
+    defaultLayout $ [whamlet|
+        <p>Nome: #{turmaNome turma}
+|]
 
 getErroR :: Handler Html
 getErroR = defaultLayout [whamlet|
