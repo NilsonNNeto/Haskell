@@ -1,0 +1,6 @@
+<section>
+    <div id="main">
+        <div class="main-content">
+            <p>Nome: #{usuarioNome usuario}
+            <p>Tipo: #{usuarioTipo usuario}
+            <p>Email: #{usuarioEmail usuario}
