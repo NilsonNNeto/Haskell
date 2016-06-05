@@ -1,7 +1,7 @@
 <section>
     <div id="main">
         <div class="main-content">
-            <h1 class="titulo">Cadastro de Materia
+            <h1 class="titulo">Cadastro de Matéria
             <fieldset>
                 <legend>Preencha o formulário
                 <form method=post id="form-materia" enctype=#{enctype} action=@{MateriaR}>

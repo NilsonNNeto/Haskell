@@ -1,13 +1,13 @@
 <header>
     <nav class="menu-container">
         <div class="logo-container">
-            <a href="">Logo
+            <a href="@{HomeR}">Logo
         <ul id="menu">
             <li>
-                <a href="">Home
+                <a href="@{UsuarioR}">Usuário
             <li>
-                <a href="">Home
+                <a href="@{TurmaR}">Turma
             <li>
-                <a href="">Home
+                <a href="@{MateriaR}">Matéria
         <div class="clearfix">
         <div class="linha-menu">
