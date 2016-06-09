@@ -1,7 +1,7 @@
 <header>
     <nav class="menu-container">
         <div class="logo-container">
-            <a href="@{HomeR}">Logo
+            <a href="@{HomeR}"><img src=@{StaticR logoFatec_png} height="60" width="120">
         <ul id="menu">
             <li>
                 <a href="@{UsuarioR}">Usuário

@@ -176,9 +176,10 @@ getChecarMateriaR aid = do
         $(whamletFile "templates/hamlet/form/checarMateria.hamlet")
 
 getErroR :: Handler Html
-getErroR = defaultLayout [whamlet|
-    ocorreu uma falha no sucesso 
-|]
+getErroR = defaultLayout $ do
+                addStylesheet $ StaticR menu_css
+                $(whamletFile "templates/hamlet/menu.hamlet")
+                $(whamletFile "templates/hamlet/erro.hamlet")
 
 getHomeR :: Handler Html
 getHomeR = defaultLayout $ do
