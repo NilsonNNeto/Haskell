@@ -5,6 +5,7 @@ html, body{
 }
 body{
     background-color: #626266;
+    font-family: Arial, sans-serif;
 }
 .clearfix{
     display: block;
@@ -100,6 +101,7 @@ form label{
 form input[type=text],
 form input[type=password],
 form input[type=email],
+form input[type=date],
 form select{
     border-radius:5px;
     min-height: 20px;
@@ -108,7 +110,8 @@ form select{
 form select{
     min-height: 26px;
 }
-.submit{
+.submit,
+.btn{
     background-color: #541F14;
     padding: 10px 20px;
     font-size: 15px;
@@ -118,4 +121,10 @@ form select{
     cursor: pointer;
     color: white;
     float: right;
+}
+
+.btn {
+    float: none;
+    display: inline-block;
+    text-decoration: none;
 }

@@ -2,9 +2,10 @@
     <div id="main">
         <div class="main-content">
             <h1 class="titulo">Presença
-            <fieldset>
-                <legend>Indique o dia e a matéria
-                <form method=post enctype=#{enctype} action=@{UsuarioR}>
-                    ^{widget}
-                    <input type="submit" value="Criar Presença" class="submit">
-                    <span class="clearfix">
+            <table>
+                $forall Entity id materia <- todasmaterias
+                    <tr>
+                        <th>
+                            <label>#{materiaNome materia}
+                        <td>
+                            <a href="@{PresencaR id}" class=btn>Fazer Chamada

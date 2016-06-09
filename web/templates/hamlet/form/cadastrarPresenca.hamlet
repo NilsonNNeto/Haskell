@@ -1,0 +1,10 @@
+<section>
+    <div id="main">
+        <div class="main-content">
+            <h1 class="titulo">Chamada
+            <p>Matéria com ID: #{toPathPiece mid}
+            <table>
+                $forall Entity id aluno <- todosalunos
+                    <tr>
+                        <td>#{materiaNome aluno}
+                    
