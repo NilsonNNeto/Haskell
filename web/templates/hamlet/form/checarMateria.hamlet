@@ -2,5 +2,5 @@
     <div id="main">
         <div class="main-content">
             <p>Nome: #{materiaNome materia}
-            <p>Turma: #{materiaTurma materia}
+            <p>Turma: #{toPathPiece $ materiaTurma materia}
             <p>Aluno: #{materiaAluno materia}
