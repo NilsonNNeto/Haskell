@@ -1,0 +1,8 @@
+<section>
+    <div id="main">
+        <div class="main-content">
+            <h1 class="titulo">Listagem de Todas as Turmas Cadastradas
+            <fieldset>
+                $forall Entity id turma <- todasTurmas
+                    <br>
+                        <label>#{turmaNome turma}

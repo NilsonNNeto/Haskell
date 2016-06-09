@@ -44,12 +44,12 @@ mkYesod "Pagina" [parseRoutes|
 / HomeR GET
 /usuario/cadastro UsuarioR GET POST
 /usuario/checar/#UsuarioId ChecarUsuarioR GET
+/usuario/todos UsuarioTodosR GET
 /turma/cadastro TurmaR GET POST
 /turma/checar/#TurmaId ChecarTurmaR GET
+/turma/todas TurmaTodasR GET
 /materia/cadastro MateriaR GET POST
 /materia/checar/#MateriaId ChecarMateriaR GET
--- /presenca CriarPresencaR GET
--- /presenca/#MateriaId PresencaR GET
 /presenca PresencaR GET POST
 /presenca/checar/#PresencaId ChecarPresencaR GET
 
@@ -129,11 +129,6 @@ materias = do
 alunosmat = do 
         entidades <- runDB $ selectList [UsuarioTipo ==. "Aluno"] [Asc UsuarioNome] 
         optionsPairs $ fmap (\ent -> (usuarioNome $ entityVal ent, entityKey ent)) entidades
-        
-        
-
-        
-        
        
 formUsuario :: Form Usuario
 formUsuario = renderDivs $ Usuario <$>
@@ -141,6 +136,14 @@ formUsuario = renderDivs $ Usuario <$>
            areq passwordField "Senha: " Nothing <*>
            areq (selectFieldList [("Professor" :: Text, "Professor"),("Aluno", "Aluno")]) "Tipo: " Nothing <*>
            areq emailField "Email: " Nothing
+
+getUsuarioTodosR :: Handler Html
+getUsuarioTodosR = do
+            todosUsuarios <- runDB $ selectList ([]::[Filter Usuario]) []
+            defaultLayout $ do
+                addStylesheet $ StaticR menu_css
+                $(whamletFile "templates/hamlet/menu.hamlet")
+                $(whamletFile "templates/hamlet/todosUsuarios.hamlet")
 
 formTurma :: Form Turma
 formTurma = renderDivs $ Turma <$>
@@ -177,6 +180,14 @@ getTurmaR = do
                 addStylesheet $ StaticR menu_css
                 $(whamletFile "templates/hamlet/menu.hamlet")
                 $(whamletFile "templates/hamlet/form/cadastrarTurma.hamlet")
+
+getTurmaTodasR :: Handler Html
+getTurmaTodasR = do
+            todasTurmas <- runDB $ selectList ([]::[Filter Turma]) []
+            defaultLayout $ do
+                addStylesheet $ StaticR menu_css
+                $(whamletFile "templates/hamlet/menu.hamlet")
+                $(whamletFile "templates/hamlet/todasTurmas.hamlet")
 
 getMateriaR :: Handler Html
 getMateriaR = do
@@ -250,5 +261,5 @@ connStr = "dbname=d9pva9v7sc2rm1 host=ec2-54-163-240-97.compute-1.amazonaws.com 
 main::IO()
 main = runStdoutLoggingT $ withPostgresqlPool connStr 10 $ \pool -> liftIO $ do 
        runSqlPersistMPool (runMigration migrateAll) pool
-       t@(Static settings) <- static "static"
+       t@(Static settings) <- static "../static"
        warp 8080 (Pagina t pool)
