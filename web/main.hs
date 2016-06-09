@@ -49,6 +49,7 @@ mkYesod "Pagina" [parseRoutes|
 /materia/cadastro MateriaR GET POST
 /materia/checar/#MateriaId ChecarMateriaR GET
 /presenca CriarPresencaR GET
+/presenca/#MateriaId PresencaR GET
 
 /erro ErroR GET
 /static StaticR Static getStatic
@@ -69,21 +70,30 @@ instance RenderMessage Pagina FormMessage where
 
 getCriarPresencaR :: Handler Html
 getCriarPresencaR = do
-            (widget, enctype) <- generateFormPost formCriarPresenca
+            todasmaterias <- runDB $ selectList ([]::[Filter Materia]) []
             defaultLayout $ do
                 addStylesheet $ StaticR menu_css
                 $(whamletFile "templates/hamlet/menu.hamlet")
                 $(whamletFile "templates/hamlet/form/iniciarCadPresenca.hamlet")
 
 
-formCriarPresenca :: Form (Day, MateriaId)
-formCriarPresenca = renderDivs $ (,) <$>
-          areq dayField "Dia: " Nothing <*>
-          areq (selectField presencas) "Tipo: " Nothing
+getPresencaR :: MateriaId -> Handler Html
+getPresencaR mid = do
+            todosalunos <- runDB $ selectList [MateriaId ==. mid] [Asc MateriaNome] 
+            defaultLayout $ do
+                addStylesheet $ StaticR menu_css
+                $(whamletFile "templates/hamlet/menu.hamlet")
+                $(whamletFile "templates/hamlet/form/cadastrarPresenca.hamlet")
+
+
+-- formCriarPresenca :: Form MateriaId
+-- formCriarPresenca = renderDivs $ Materia <$>
+--           areq dayField "Dia: " Nothing <*>
+--           areq (selectField presencas) "Tipo: " Nothing
            
-presencas = do
-      entidades <- runDB $ selectList ([]::[Filter Materia]) [] 
-      optionsPairs $ fmap (\ent -> (materiaNome $ entityVal ent, entityKey ent)) entidades
+-- presencas = do
+--       entidades <- runDB $ selectList ([]::[Filter Materia]) [] 
+--       optionsPairs $ fmap (\ent -> (materiaNome $ entityVal ent, entityKey ent)) entidades
        
            
 formUsuario = renderDivs $ Usuario <$>

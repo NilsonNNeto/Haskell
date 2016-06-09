@@ -9,5 +9,7 @@
                 <a href="@{TurmaR}">Turma
             <li>
                 <a href="@{MateriaR}">Matéria
+            <li>
+                <a href="@{CriarPresencaR}">Presença
         <div class="clearfix">
         <div class="linha-menu">
