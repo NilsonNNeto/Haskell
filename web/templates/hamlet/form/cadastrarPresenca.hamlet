@@ -4,7 +4,9 @@
             <h1 class="titulo">Chamada
             <p>Matéria com ID: #{toPathPiece mid}
             <table>
-                $forall Entity id aluno <- todosalunos
-                    <tr>
-                        <td>#{materiaNome aluno}
+                <tr>
+                    $forall Entity id materia <- materiaselect
+                        <td>
+                            $forall alunoid <- (Prelude.map (toPathPiece) (materiaAluno materia))
+                        <td>#{show $ materiaAluno materia}
                     

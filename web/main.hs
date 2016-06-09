@@ -72,6 +72,7 @@ getCriarPresencaR :: Handler Html
 getCriarPresencaR = do
             todasmaterias <- runDB $ selectList ([]::[Filter Materia]) []
             defaultLayout $ do
+                setTitle "Criar Lista de Presença"
                 addStylesheet $ StaticR menu_css
                 $(whamletFile "templates/hamlet/menu.hamlet")
                 $(whamletFile "templates/hamlet/form/iniciarCadPresenca.hamlet")
@@ -79,8 +80,9 @@ getCriarPresencaR = do
 
 getPresencaR :: MateriaId -> Handler Html
 getPresencaR mid = do
-            todosalunos <- runDB $ selectList [MateriaId ==. mid] [Asc MateriaNome] 
+            materiaselect <- runDB $ selectFirst [MateriaId ==. mid] [Asc MateriaNome] 
             defaultLayout $ do
+                setTitle "Lista de Presença"
                 addStylesheet $ StaticR menu_css
                 $(whamletFile "templates/hamlet/menu.hamlet")
                 $(whamletFile "templates/hamlet/form/cadastrarPresenca.hamlet")
@@ -94,6 +96,13 @@ getPresencaR mid = do
 -- presencas = do
 --       entidades <- runDB $ selectList ([]::[Filter Materia]) [] 
 --       optionsPairs $ fmap (\ent -> (materiaNome $ entityVal ent, entityKey ent)) entidades
+
+-- postUsuarioR :: Handler Html
+-- postUsuarioR = do
+--           ((result, _), _) <- runFormPost formUsuario
+--           case result of 
+--               FormSuccess usuarioRetornoTela -> (runDB $ insert usuarioRetornoTela) >>= \uiid -> redirect (ChecarUsuarioR uiid)
+--               _ -> redirect ErroR
        
            
 formUsuario = renderDivs $ Usuario <$>
@@ -124,6 +133,7 @@ getUsuarioR :: Handler Html
 getUsuarioR = do
             (widget, enctype) <- generateFormPost formUsuario
             defaultLayout $ do
+                setTitle "Cadastrar Usuário"
                 addStylesheet $ StaticR menu_css
                 $(whamletFile "templates/hamlet/menu.hamlet")
                 $(whamletFile "templates/hamlet/form/cadastrarUsuario.hamlet")
@@ -132,6 +142,7 @@ getTurmaR :: Handler Html
 getTurmaR = do
             (widget, enctype) <- generateFormPost formTurma
             defaultLayout $ do
+                setTitle "Cadastrar Turma"
                 addStylesheet $ StaticR menu_css
                 $(whamletFile "templates/hamlet/menu.hamlet")
                 $(whamletFile "templates/hamlet/form/cadastrarTurma.hamlet")
@@ -140,6 +151,7 @@ getMateriaR :: Handler Html
 getMateriaR = do
             (widget, enctype) <- generateFormPost formMateria
             defaultLayout $ do
+                setTitle "Cadastrar Matéria"
                 addStylesheet $ StaticR menu_css
                 $(whamletFile "templates/hamlet/menu.hamlet")
                 $(whamletFile "templates/hamlet/form/cadastrarMateria.hamlet")
@@ -200,6 +212,7 @@ getHomeR = defaultLayout $ do
                 addStylesheet $ StaticR menu_css
                 $(whamletFile "templates/hamlet/menu.hamlet")
                 $(whamletFile "templates/hamlet/index.hamlet")
+
 
 connStr = "dbname=d9pva9v7sc2rm1 host=ec2-54-163-240-97.compute-1.amazonaws.com user=bcgxcouvxtiphy password=2XQS1V-eZsjn7oXURLLvTnh2FK port=5432"
 
