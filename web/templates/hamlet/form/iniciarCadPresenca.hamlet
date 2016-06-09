@@ -1,10 +1,10 @@
 <section>
     <div id="main">
-        <div class="main-content">Presença
-            <h1 class="titulo">
+        <div class="main-content">
+            <h1 class="titulo">Presença
             <fieldset>
-                <legend>Indique a Matéria da Prenseça
+                <legend>Indique o dia e a matéria
                 <form method=post enctype=#{enctype} action=@{UsuarioR}>
-                    
-                    <input type="submit" value="Salvar" class="submit">
+                    ^{widget}
+                    <input type="submit" value="Criar Presença" class="submit">
                     <span class="clearfix">

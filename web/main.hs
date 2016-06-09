@@ -8,6 +8,7 @@ import Database.Persist.Postgresql
 import Text.Lucius (luciusFile)
 import Data.Text
 import Control.Monad.Logger (runStdoutLoggingT)
+import Data.Time.Calendar
 
 data Pagina = Pagina{getStatic :: Static, connPool :: ConnectionPool}
 
@@ -32,7 +33,7 @@ Materia json
 	deriving Show
 	
 Presenca json
-    dia Text
+    dia Day
     materia MateriaId
     alunospres [UsuarioId]
 |]
@@ -68,19 +69,22 @@ instance RenderMessage Pagina FormMessage where
 
 getCriarPresencaR :: Handler Html
 getCriarPresencaR = do
-            (widget, enctype) <- generateFormPost formMateria
+            (widget, enctype) <- generateFormPost formCriarPresenca
             defaultLayout $ do
                 addStylesheet $ StaticR menu_css
                 $(whamletFile "templates/hamlet/menu.hamlet")
                 $(whamletFile "templates/hamlet/form/iniciarCadPresenca.hamlet")
 
 
--- formCriarPresenca :: Form Presenca
--- formCriarPresenca = renderDivs $ Presenca <$>
---           areq textField "Dia: " Nothing <*>
---           areq (selectFieldList [("Professor" :: Text, "Professor"),("Aluno", "Aluno")]) "Tipo: " Nothing
+formCriarPresenca :: Form (Day, MateriaId)
+formCriarPresenca = renderDivs $ (,) <$>
+          areq dayField "Dia: " Nothing <*>
+          areq (selectField presencas) "Tipo: " Nothing
            
-           
+presencas = do
+      entidades <- runDB $ selectList ([]::[Filter Materia]) [] 
+      optionsPairs $ fmap (\ent -> (materiaNome $ entityVal ent, entityKey ent)) entidades
+       
            
 formUsuario = renderDivs $ Usuario <$>
            areq textField "Nome: " Nothing <*>
@@ -192,5 +196,5 @@ connStr = "dbname=d9pva9v7sc2rm1 host=ec2-54-163-240-97.compute-1.amazonaws.com 
 main::IO()
 main = runStdoutLoggingT $ withPostgresqlPool connStr 10 $ \pool -> liftIO $ do 
        runSqlPersistMPool (runMigration migrateAll) pool
-       t@(Static settings) <- static "../static"
+       t@(Static settings) <- static "static"
        warp 8080 (Pagina t pool)

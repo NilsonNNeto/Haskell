@@ -102,8 +102,11 @@ form input[type=password],
 form input[type=email],
 form select{
     border-radius:5px;
-    height: 20px;
+    min-height: 20px;
     width: 300px;
+}
+form select{
+    min-height: 26px;
 }
 .submit{
     background-color: #541F14;
