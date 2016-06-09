@@ -3,4 +3,8 @@
         <div class="main-content">
             <p>Nome: #{materiaNome materia}
             <p>Turma: #{toPathPiece $ materiaTurma materia}
-            <p>Aluno: #{materiaAluno materia}
+            <p>Alunos:
+                <table>
+                    $forall x <- (Prelude.map (toPathPiece) (materiaAluno materia))
+                        <tr>
+                            <td> - #{x}

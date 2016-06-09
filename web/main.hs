@@ -28,7 +28,7 @@ Turma json
 Materia json
 	nome Text
 	turma TurmaId
-	aluno Text
+	aluno [UsuarioId]
 	deriving Show
 |]
 
@@ -74,11 +74,15 @@ formMateria :: Form Materia
 formMateria = renderDivs $ Materia <$>
            areq textField "Nome: " Nothing <*>
            areq (selectField turmas) "Turma: " Nothing <*>
-           areq textField "Aluno: " Nothing
+           areq (multiSelectField alunos) "Alunos: " Nothing
            
 turmas = do
        entidades <- runDB $ selectList [] [Asc TurmaNome] 
        optionsPairs $ fmap (\ent -> (turmaNome $ entityVal ent, entityKey ent)) entidades
+       
+alunos = do
+       entidades <- runDB $ selectList [UsuarioTipo ==. "Aluno"] [Asc UsuarioNome] 
+       optionsPairs $ fmap (\ent -> (usuarioNome $ entityVal ent, entityKey ent)) entidades
 
 getUsuarioR :: Handler Html
 getUsuarioR = do
