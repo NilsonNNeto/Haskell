@@ -50,6 +50,7 @@ mkYesod "Pagina" [parseRoutes|
 /turma/todas TurmaTodasR GET
 /materia/cadastro MateriaR GET POST
 /materia/checar/#MateriaId ChecarMateriaR GET
+/materia/todas MateriaTodasR GET
 /presenca PresencaR GET POST
 /presenca/checar/#PresencaId ChecarPresencaR GET
 
@@ -197,6 +198,14 @@ getMateriaR = do
                 addStylesheet $ StaticR menu_css
                 $(whamletFile "templates/hamlet/menu.hamlet")
                 $(whamletFile "templates/hamlet/form/cadastrarMateria.hamlet")
+
+getMateriaTodasR :: Handler Html
+getMateriaTodasR = do
+            todasMaterias <- runDB $ selectList ([]::[Filter Materia]) []
+            defaultLayout $ do
+                addStylesheet $ StaticR menu_css
+                $(whamletFile "templates/hamlet/menu.hamlet")
+                $(whamletFile "templates/hamlet/todasMaterias.hamlet")
 
 postUsuarioR :: Handler Html
 postUsuarioR = do
