@@ -8,5 +8,6 @@
                     $forall Entity id materia <- materiaselect
                         <td>
                             $forall alunoid <- (Prelude.map (toPathPiece) (materiaAluno materia))
+                                <p>ID do aluno: #{alunoid}
                         <td>#{show $ materiaAluno materia}
                     

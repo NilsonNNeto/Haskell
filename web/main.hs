@@ -48,8 +48,9 @@ mkYesod "Pagina" [parseRoutes|
 /turma/checar/#TurmaId ChecarTurmaR GET
 /materia/cadastro MateriaR GET POST
 /materia/checar/#MateriaId ChecarMateriaR GET
-/presenca CriarPresencaR GET
-/presenca/#MateriaId PresencaR GET
+-- /presenca CriarPresencaR GET
+-- /presenca/#MateriaId PresencaR GET
+/presenca PresencaR GET
 
 /erro ErroR GET
 /static StaticR Static getStatic
@@ -68,26 +69,50 @@ instance RenderMessage Pagina FormMessage where
     renderMessage _ _ = defaultFormMessage
 
 
-getCriarPresencaR :: Handler Html
-getCriarPresencaR = do
+-- getCriarPresencaR :: Handler Html
+-- getCriarPresencaR = do
+--             todasmaterias <- runDB $ selectList ([]::[Filter Materia]) []
+--             defaultLayout $ do
+--                 setTitle "Criar Lista de Presença"
+--                 addStylesheet $ StaticR menu_css
+--                 $(whamletFile "templates/hamlet/menu.hamlet")
+--                 $(whamletFile "templates/hamlet/form/iniciarCadPresenca.hamlet")
+
+
+-- getPresencaR :: MateriaId -> Handler Html
+-- getPresencaR mid = do
+--             materiaselect <- runDB $ selectFirst [MateriaId ==. mid] [Asc MateriaNome] 
+--             defaultLayout $ do
+--                 setTitle "Lista de Presença"
+--                 addStylesheet $ StaticR menu_css
+--                 $(whamletFile "templates/hamlet/menu.hamlet")
+--                 $(whamletFile "templates/hamlet/form/cadastrarPresenca.hamlet")
+
+getPresencaR :: Handler Html
+getPresencaR = do
             todasmaterias <- runDB $ selectList ([]::[Filter Materia]) []
+            (widget, enctype) <- generateFormPost formPresenca
             defaultLayout $ do
-                setTitle "Criar Lista de Presença"
+                setTitle "Chamada"
                 addStylesheet $ StaticR menu_css
                 $(whamletFile "templates/hamlet/menu.hamlet")
-                $(whamletFile "templates/hamlet/form/iniciarCadPresenca.hamlet")
+                $(whamletFile "templates/hamlet/form/cadastrarChamada.hamlet")
 
-
-getPresencaR :: MateriaId -> Handler Html
-getPresencaR mid = do
-            materiaselect <- runDB $ selectFirst [MateriaId ==. mid] [Asc MateriaNome] 
-            defaultLayout $ do
-                setTitle "Lista de Presença"
-                addStylesheet $ StaticR menu_css
-                $(whamletFile "templates/hamlet/menu.hamlet")
-                $(whamletFile "templates/hamlet/form/cadastrarPresenca.hamlet")
-
-
+formPresenca :: Form Presenca
+formPresenca = renderDivs $ Presenca <$>
+           areq dayField "Dia: " Nothing <*>
+           areq (selectField materias) "Matéria: " Nothing <*>
+           areq (multiSelectField alunosmat) "Alunos: " Nothing
+           
+materias = do
+        entidades <- runDB $ selectList ([]::[Filter Materia]) [] 
+        optionsPairs $ fmap (\ent -> (materiaNome $ entityVal ent, entityKey ent)) entidades
+       
+alunosmat = do 
+        entidades <- runDB $ selectList [UsuarioTipo ==. "Aluno"] [Asc UsuarioNome] 
+        optionsPairs $ fmap (\ent -> (usuarioNome $ entityVal ent, entityKey ent)) entidades
+        
+        
 -- formCriarPresenca :: Form MateriaId
 -- formCriarPresenca = renderDivs $ Materia <$>
 --           areq dayField "Dia: " Nothing <*>
@@ -103,8 +128,10 @@ getPresencaR mid = do
 --           case result of 
 --               FormSuccess usuarioRetornoTela -> (runDB $ insert usuarioRetornoTela) >>= \uiid -> redirect (ChecarUsuarioR uiid)
 --               _ -> redirect ErroR
+        
+        
        
-           
+formUsuario :: Form Usuario
 formUsuario = renderDivs $ Usuario <$>
            areq textField "Nome: " Nothing <*>
            areq passwordField "Senha: " Nothing <*>
