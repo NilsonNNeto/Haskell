@@ -10,6 +10,6 @@
             <li>
                 <a href="@{MateriaR}">Matéria
             <li>
-                <a href="@{CriarPresencaR}">Presença
+                <a href="@{PresencaR}">Presença
         <div class="clearfix">
         <div class="linha-menu">
