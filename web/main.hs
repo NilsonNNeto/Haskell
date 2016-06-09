@@ -30,6 +30,11 @@ Materia json
 	turma TurmaId
 	aluno [UsuarioId]
 	deriving Show
+	
+Presenca json
+    dia Text
+    materia MateriaId
+    alunospres [UsuarioId]
 |]
 
 staticFiles "../static" 
@@ -42,6 +47,7 @@ mkYesod "Pagina" [parseRoutes|
 /turma/checar/#TurmaId ChecarTurmaR GET
 /materia/cadastro MateriaR GET POST
 /materia/checar/#MateriaId ChecarMateriaR GET
+/presenca CriarPresencaR GET
 
 /erro ErroR GET
 /static StaticR Static getStatic
@@ -59,7 +65,23 @@ type Form a = Html -> MForm Handler (FormResult a, Widget)
 instance RenderMessage Pagina FormMessage where
     renderMessage _ _ = defaultFormMessage
 
-formUsuario :: Form Usuario
+
+getCriarPresencaR :: Handler Html
+getCriarPresencaR = do
+            (widget, enctype) <- generateFormPost formMateria
+            defaultLayout $ do
+                addStylesheet $ StaticR menu_css
+                $(whamletFile "templates/hamlet/menu.hamlet")
+                $(whamletFile "templates/hamlet/form/iniciarCadPresenca.hamlet")
+
+
+-- formCriarPresenca :: Form Presenca
+-- formCriarPresenca = renderDivs $ Presenca <$>
+--           areq textField "Dia: " Nothing <*>
+--           areq (selectFieldList [("Professor" :: Text, "Professor"),("Aluno", "Aluno")]) "Tipo: " Nothing
+           
+           
+           
 formUsuario = renderDivs $ Usuario <$>
            areq textField "Nome: " Nothing <*>
            areq passwordField "Senha: " Nothing <*>

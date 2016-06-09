@@ -1,0 +1,10 @@
+<section>
+    <div id="main">
+        <div class="main-content">Presença
+            <h1 class="titulo">
+            <fieldset>
+                <legend>Indique a Matéria da Prenseça
+                <form method=post enctype=#{enctype} action=@{UsuarioR}>
+                    
+                    <input type="submit" value="Salvar" class="submit">
+                    <span class="clearfix">
