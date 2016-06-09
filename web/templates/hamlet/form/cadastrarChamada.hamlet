@@ -4,7 +4,7 @@
             <h1 class="titulo">Chamada
             <fieldset>
                 <legend>Preencha o formulário e selecione os alunos presentes
-                <form method=post id="form-materia" enctype=#{enctype} action=@{MateriaR}>
+                <form method=post id="form-materia" enctype=#{enctype} action=@{PresencaR}>
                     ^{widget}
                     <input type="submit" value="Salvar" class="submit">
                     <span class="clearfix">

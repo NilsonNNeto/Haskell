@@ -50,7 +50,8 @@ mkYesod "Pagina" [parseRoutes|
 /materia/checar/#MateriaId ChecarMateriaR GET
 -- /presenca CriarPresencaR GET
 -- /presenca/#MateriaId PresencaR GET
-/presenca PresencaR GET
+/presenca PresencaR GET POST
+/presenca/checar/#PresencaId ChecarPresencaR GET
 
 /erro ErroR GET
 /static StaticR Static getStatic
@@ -97,6 +98,23 @@ getPresencaR = do
                 addStylesheet $ StaticR menu_css
                 $(whamletFile "templates/hamlet/menu.hamlet")
                 $(whamletFile "templates/hamlet/form/cadastrarChamada.hamlet")
+                
+getChecarPresencaR :: PresencaId -> Handler Html
+getChecarPresencaR pid = do
+    presenca <- runDB $ get404 pid
+    materia <- runDB $ get404 (presencaMateria presenca)
+    defaultLayout $ do
+        setTitle "Checar Presença"
+        addStylesheet $ StaticR menu_css
+        $(whamletFile "templates/hamlet/menu.hamlet")
+        $(whamletFile "templates/hamlet/form/checarPresenca.hamlet")
+                
+postPresencaR :: Handler Html
+postPresencaR = do
+           ((result, _), _) <- runFormPost formPresenca
+           case result of 
+               FormSuccess presencaRetornoTela -> (runDB $ insert presencaRetornoTela) >>= \piid -> redirect (ChecarPresencaR piid)
+               _ -> redirect ErroR
 
 formPresenca :: Form Presenca
 formPresenca = renderDivs $ Presenca <$>
@@ -113,21 +131,7 @@ alunosmat = do
         optionsPairs $ fmap (\ent -> (usuarioNome $ entityVal ent, entityKey ent)) entidades
         
         
--- formCriarPresenca :: Form MateriaId
--- formCriarPresenca = renderDivs $ Materia <$>
---           areq dayField "Dia: " Nothing <*>
---           areq (selectField presencas) "Tipo: " Nothing
-           
--- presencas = do
---       entidades <- runDB $ selectList ([]::[Filter Materia]) [] 
---       optionsPairs $ fmap (\ent -> (materiaNome $ entityVal ent, entityKey ent)) entidades
 
--- postUsuarioR :: Handler Html
--- postUsuarioR = do
---           ((result, _), _) <- runFormPost formUsuario
---           case result of 
---               FormSuccess usuarioRetornoTela -> (runDB $ insert usuarioRetornoTela) >>= \uiid -> redirect (ChecarUsuarioR uiid)
---               _ -> redirect ErroR
         
         
        

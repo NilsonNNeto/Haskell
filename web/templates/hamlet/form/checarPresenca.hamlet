@@ -1,0 +1,6 @@
+<section>
+    <div id="main">
+        <div class="main-content">
+            <h1>Presença do dia #{show $ presencaDia presenca}
+            <p>Dia: #{show $ presencaDia presenca}
+            <p>Materia: #{materiaNome materia}
